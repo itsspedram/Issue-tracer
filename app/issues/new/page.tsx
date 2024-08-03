@@ -9,11 +9,13 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
-import ErrorMessage from "@/app/components/ErrorMessage"
+import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 
 type issueForm = z.infer<typeof createIssueSchema>;
 const NewIssuePage = () => {
   const [err, setErr] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     control,
@@ -34,10 +36,13 @@ const NewIssuePage = () => {
         className=" mt-2"
         onSubmit={handleSubmit(async (d) => {
           try {
+            setIsSubmitting(true);
             await axios.post("/api/issues", d);
             router.push("/");
           } catch (error) {
             setErr("oooooooooooooooooooooooooops!");
+          } finally {
+            setIsSubmitting(false);
           }
         })}
       >
@@ -45,10 +50,8 @@ const NewIssuePage = () => {
           {...register("title")}
           placeholder="Search the docs…"
         ></TextField.Root>
-        
-          <ErrorMessage>
-            {errors.title?.message}
-          </ErrorMessage>
+
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
 
         <Controller
           name="description"
@@ -61,10 +64,10 @@ const NewIssuePage = () => {
             />
           )}
         />
-        <ErrorMessage>
-            {errors.description?.message}
-          </ErrorMessage>
-        <Button className="!px-7">create</Button>
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+        <Button disabled={isSubmitting} className="!px-7">
+          create {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
