@@ -3,7 +3,6 @@ import React from "react";
 import IssueBadgeComponent from "../components/IssueBadgeComponent";
 import IssuesAction from "./issuesAction";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 const LoadingIssues = () => {
   const issues = [1, 2, 3, 4, 5];

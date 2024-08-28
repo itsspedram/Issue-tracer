@@ -25,27 +25,29 @@ const NewIssuePage = () => {
     resolver: zodResolver(createIssueSchema),
   });
   const router = useRouter();
-  const onSubmit = () => {
-    handleSubmit(async (d) => {
-      try {
-        setIsSubmitting(true);
-        await axios.post("/api/issues", d);
-        router.push("/");
-      } catch (error) {
-        setErr("oooooooooooooooooooooooooops!");
-      } finally {
-        setIsSubmitting(false);
-      }
-    });
-  };
+
   return (
     <div className="max-w-xl">
+      <button>test</button>
       {err && (
         <Callout.Root color="red" className="my-5">
           <Callout.Text>{err}</Callout.Text>
         </Callout.Root>
       )}
-      <form className=" mt-2" onSubmit={onSubmit}>
+      <form
+        className=" mt-2"
+        onSubmit={handleSubmit(async (d) => {
+          try {
+            setIsSubmitting(true);
+            await axios.post("/api/issues", d);
+            router.push("/");
+          } catch (error) {
+            setErr("oooooooooooooooooooooooooops!");
+          } finally {
+            setIsSubmitting(false);
+          }
+        })}
+      >
         <TextField.Root
           {...register("title")}
           placeholder="Search the docs…"
