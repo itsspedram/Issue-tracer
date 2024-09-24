@@ -7,14 +7,12 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IssueSchema } from "../../../validationSchemas";
+import { IssueSchema } from "../../validationSchemas";
 import { z } from "zod";
-import { ErrorMessage } from "../../../components";
-import Spinner from "../../../components/Spinner";
+import { ErrorMessage } from "../../components";
+import Spinner from "../../components/Spinner";
 import { Issue } from "@prisma/client";
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
+import SimpleMDE from "react-simplemde-editor"
 
 type issueFormDetails = z.infer<typeof IssueSchema>;
 const IssueForm = ({ issue }: { issue?: Issue }) => {
@@ -43,6 +41,9 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           onSubmit={handleSubmit(async (d) => {
             try {
               setIsSubmitting(true);
+              if (issue) {
+              await axios.patch(`/api/issues/${issue.id}`, d);
+              }
               await axios.post("/api/issues", d);
               router.push("/");
             } catch (error) {
